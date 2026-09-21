@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { CSSProperties } from 'react';
 import type { MediaAsset } from '../../data/media';
 
@@ -26,6 +26,13 @@ export function Figure({
 }: FigureProps) {
   const [loaded, setLoaded] = useState(false);
 
+  // A cached image can finish decoding before React attaches `onLoad`, which
+  // would leave the picture parked at opacity 0 forever. Checking `complete`
+  // as the node mounts closes that window.
+  const attach = useCallback((node: HTMLImageElement | null) => {
+    if (node?.complete && node.naturalWidth > 0) setLoaded(true);
+  }, []);
+
   return (
     <div className={`relative overflow-hidden bg-ink-soft ${className}`} style={style}>
       {asset.blur ? (
@@ -36,6 +43,7 @@ export function Figure({
         />
       ) : null}
       <img
+        ref={attach}
         src={asset.src}
         alt={asset.alt}
         width={asset.width}

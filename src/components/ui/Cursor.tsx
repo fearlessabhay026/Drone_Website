@@ -22,12 +22,15 @@ export function Cursor() {
   useEffect(() => {
     if (!hasPointer || reduced) return;
 
+    // Position rides motion values; only the label touches React state, and
+    // it bails out while the pointer stays over the same kind of element.
     const onMove = (event: PointerEvent) => {
       x.set(event.clientX);
       y.set(event.clientY);
       setVisible(true);
       const target = (event.target as HTMLElement)?.closest?.('[data-cursor]');
-      setLabel(target ? (target as HTMLElement).dataset.cursorLabel ?? 'View project' : null);
+      const next = target ? ((target as HTMLElement).dataset.cursorLabel ?? 'View project') : null;
+      setLabel((current) => (current === next ? current : next));
     };
     const onLeave = () => setVisible(false);
 

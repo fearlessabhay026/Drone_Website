@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import * as motionReact from 'motion/react';
 import { Menu, X } from 'lucide-react';
 import { navigation, studio } from '../data/site';
 import { useActiveSection } from '../hooks/useActiveSection';
+import { useDialog } from '../hooks/useDialog';
 import { ease, swift } from '../lib/motion';
 
 const { motion, AnimatePresence, useScroll, useMotionValueEvent } = motionReact;
@@ -19,29 +20,18 @@ export function Navbar() {
     setScrolled(value > 64);
   });
 
-  // Lock the page behind the mobile menu.
-  useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : '';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [open]);
-
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  // Scroll lock, Escape, focus trap and focus restore all live in one place.
+  const close = useCallback(() => setOpen(false), []);
+  const menuRef = useDialog(open, close);
 
   return (
     <>
       <motion.header
         initial={{ y: -24, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        // Last element in: the navigation arrives after the composition settles.
-        transition={{ duration: 0.9, ease, delay: 2.15 }}
+        // Early, not last: the navigation and its CTA must be usable while
+        // the rest of the hero is still settling.
+        transition={{ duration: 0.7, ease, delay: 0.15 }}
         className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 sm:pt-6"
       >
         <nav
@@ -110,30 +100,30 @@ export function Navbar() {
       <AnimatePresence>
         {open ? (
           <motion.div
+            ref={menuRef}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={swift}
-            className="fixed inset-0 z-60 bg-ink/96 backdrop-blur-xl lg:hidden"
+            className="fixed inset-0 z-60 overflow-y-auto bg-ink/96 backdrop-blur-xl lg:hidden"
             role="dialog"
             aria-modal="true"
             aria-label="Menu"
           >
-            <div className="flex h-full flex-col px-6 pt-6 pb-10">
+            <div className="flex min-h-full flex-col px-6 pt-6 pb-10">
               <div className="flex items-center justify-between">
                 <span className="text-meta text-bone">{studio.name}</span>
                 <button
                   type="button"
-                  onClick={() => setOpen(false)}
+                  onClick={close}
                   aria-label="Close menu"
                   className="flex size-10 items-center justify-center rounded-full border border-bone/15 text-bone"
-                  autoFocus
                 >
                   <X size={16} strokeWidth={1.5} aria-hidden />
                 </button>
               </div>
 
-              <ul className="mt-auto mb-auto flex flex-col gap-1">
+              <ul className="mt-auto mb-auto flex flex-col gap-1 py-8">
                 {navigation.map((item, index) => (
                   <motion.li
                     key={item.id}
@@ -143,7 +133,7 @@ export function Navbar() {
                   >
                     <a
                       href={item.href}
-                      onClick={() => setOpen(false)}
+                      onClick={close}
                       className="text-display block py-2 text-[clamp(2.75rem,13vw,4.5rem)] text-bone"
                     >
                       {item.label}
@@ -154,7 +144,7 @@ export function Navbar() {
 
               <a
                 href="#contact"
-                onClick={() => setOpen(false)}
+                onClick={close}
                 className="text-meta block rounded-full bg-bone px-6 py-4 text-center text-ink"
               >
                 Book a shoot

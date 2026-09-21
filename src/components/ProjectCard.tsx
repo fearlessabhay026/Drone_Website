@@ -2,6 +2,7 @@ import * as motionReact from 'motion/react';
 import { ArrowUpRight } from 'lucide-react';
 import type { Project } from '../data/site';
 import { Figure } from './ui/Figure';
+import { useOpenProject } from '../hooks/useOpenProject';
 import { cinematic, inViewSoft } from '../lib/motion';
 
 const { motion } = motionReact;
@@ -21,32 +22,37 @@ type ProjectCardProps = {
 };
 
 /**
- * One portfolio entry. Hover enriches it on pointer devices; on touch the
- * same information is simply always visible, so nothing is hidden behind an
- * interaction that cannot happen.
+ * One portfolio entry. It opens the project dialog, so it is a button rather
+ * than a link — there is no separate page to navigate to. Hover enriches it
+ * on pointer devices; on touch the same information is simply always
+ * visible, so nothing is hidden behind an interaction that cannot happen.
  */
 export function ProjectCard({ project, delay = 0, sizes }: ProjectCardProps) {
+  const openProject = useOpenProject();
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={inViewSoft}
       transition={{ ...cinematic, delay }}
-      className="group relative"
+      className="relative"
     >
-      <a
-        href={`#${project.id}`}
-        aria-label={`${project.title} — ${project.category} in ${project.location}`}
+      <button
+        type="button"
+        onClick={() => openProject(project.id)}
+        aria-haspopup="dialog"
+        aria-label={`View ${project.title} — ${project.category} in ${project.location}`}
         data-cursor="view"
         data-cursor-label={`View\nproject`}
-        className="block focus-visible:outline-offset-8"
+        className="group block w-full cursor-pointer text-left focus-visible:outline-offset-8"
       >
         <div className={`relative overflow-hidden rounded-xl ${ASPECT[project.layout]}`}>
           <Figure
             asset={project.image}
             sizes={sizes}
             className="h-full w-full"
-            imgClassName="transition-transform duration-[1.4s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+            imgClassName="transition-transform duration-[1.4s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
           />
 
           {/* Accent wash keyed to the project's own imagery. */}
@@ -74,7 +80,7 @@ export function ProjectCard({ project, delay = 0, sizes }: ProjectCardProps) {
                 <p className="text-meta mt-2 text-[9px] text-bone/65">
                   {project.location} · {project.category}
                 </p>
-                <p className="mt-2 max-w-sm text-sm leading-relaxed text-bone/0 opacity-0 transition-all duration-700 group-hover:text-bone/70 group-hover:opacity-100 max-lg:hidden">
+                <p className="mt-2 max-w-sm text-sm leading-relaxed text-bone/70 opacity-0 transition-opacity duration-700 group-hover:opacity-100 group-focus-visible:opacity-100 max-lg:hidden">
                   {project.note}
                 </p>
               </div>
@@ -87,7 +93,7 @@ export function ProjectCard({ project, delay = 0, sizes }: ProjectCardProps) {
             </div>
           </div>
         </div>
-      </a>
+      </button>
     </motion.article>
   );
 }

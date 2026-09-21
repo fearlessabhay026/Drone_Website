@@ -1,6 +1,7 @@
 import { ArrowRight } from 'lucide-react';
 import { projects } from '../data/site';
 import { ProjectCard } from './ProjectCard';
+import { useOpenProject } from '../hooks/useOpenProject';
 import { SectionLabel } from './ui/SectionLabel';
 import { Reveal } from './ui/Reveal';
 
@@ -11,6 +12,7 @@ import { Reveal } from './ui/Reveal';
  */
 export function PortfolioSection() {
   const [coast, city, desert, estate] = projects;
+  const openProject = useOpenProject();
 
   return (
     <section id="work" aria-labelledby="work-heading" className="relative px-4 py-24 sm:px-6 lg:py-36">
@@ -18,9 +20,11 @@ export function PortfolioSection() {
         <header className="mb-14 lg:mb-20">
           <div className="flex items-center justify-between gap-6">
             <SectionLabel>Our portfolio</SectionLabel>
-            <a
-              href="#work"
-              className="text-meta group flex items-center gap-2 text-[9px] text-ash transition-colors hover:text-bone"
+            <button
+              type="button"
+              onClick={() => openProject(coast.id)}
+              aria-haspopup="dialog"
+              className="text-meta group flex cursor-pointer items-center gap-2 text-[9px] text-ash transition-colors hover:text-bone"
             >
               View all
               <ArrowRight
@@ -29,7 +33,7 @@ export function PortfolioSection() {
                 aria-hidden
                 className="transition-transform duration-500 group-hover:translate-x-1"
               />
-            </a>
+            </button>
           </div>
 
           <div className="mt-8 grid gap-8 lg:grid-cols-12 lg:items-end">
@@ -71,9 +75,11 @@ export function PortfolioSection() {
               Every project is scouted, flown and graded in-house, so the final frames carry one
               consistent point of view.
             </p>
-            <a
-              href={`#${estate.id}`}
-              className="text-meta group mt-8 flex w-fit items-center gap-3 rounded-full border border-bone/20 px-5 py-3 text-[9px] transition-colors duration-500 hover:bg-bone hover:text-ink"
+            <button
+              type="button"
+              onClick={() => openProject(estate.id)}
+              aria-haspopup="dialog"
+              className="text-meta group mt-8 flex w-fit cursor-pointer items-center gap-3 rounded-full border border-bone/20 px-5 py-3 text-[9px] transition-colors duration-500 hover:bg-bone hover:text-ink"
             >
               Explore the archive
               <ArrowRight
@@ -82,7 +88,7 @@ export function PortfolioSection() {
                 aria-hidden
                 className="transition-transform duration-500 group-hover:translate-x-1"
               />
-            </a>
+            </button>
           </div>
         </div>
       </div>

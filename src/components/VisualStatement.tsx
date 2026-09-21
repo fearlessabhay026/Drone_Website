@@ -15,6 +15,10 @@ const WORDS = ['See', 'What', 'Others', 'Miss.'];
  * three visual states — the background colour, the floating plate and the
  * index all transition together, which is this site's reading of the
  * reference's colour-change behaviour.
+ *
+ * Below `lg` the plate does not float over the type: at phone widths it
+ * covered the headline completely and the section read as an accident. It
+ * stacks underneath instead, keeping the same parts in the same order.
  */
 export function VisualStatement() {
   const ref = useRef<HTMLElement | null>(null);
@@ -57,11 +61,11 @@ export function VisualStatement() {
       >
         <Grain />
 
-        <div className="relative mx-auto flex w-full max-w-[112rem] flex-col justify-center px-4 sm:px-6">
+        <div className="relative mx-auto flex w-full max-w-[112rem] flex-col justify-center gap-10 px-4 sm:px-6 lg:block">
           {/* Oversized type: the composition, not a heading above one. */}
           <h2
             id="statement-heading"
-            className="text-display text-edge relative z-10 text-[clamp(3rem,15vw,12rem)] text-bone"
+            className="text-display text-edge relative z-10 text-[clamp(2.75rem,14vw,12rem)] text-bone"
           >
             {WORDS.map((word, index) => (
               <Reveal key={word} delay={index * 0.07}>
@@ -70,12 +74,16 @@ export function VisualStatement() {
             ))}
           </h2>
 
-          {/* Floating plate, sitting over the type. */}
+          {/* Floating plate. Over the type on desktop, beneath it on phones. */}
           <motion.div
-            style={{ y: plateY, rotate: plateRotate }}
-            className="pointer-events-none absolute top-1/2 right-4 z-20 w-[min(62vw,34rem)] -translate-y-1/2 sm:right-8 lg:right-[8%]"
+            style={{ y: plateY }}
+            className="pointer-events-none relative z-20 w-[min(76vw,24rem)] self-end sm:w-[min(58vw,26rem)] lg:absolute lg:top-1/2 lg:right-[13%] lg:w-[min(44vw,32rem)] lg:-translate-y-1/2"
           >
-            <div className="shadow-cinematic relative aspect-[4/3] w-full overflow-hidden rounded-xl">
+            {/* Only the plate tilts — a tilted caption reads as a bug. */}
+            <motion.div
+              style={{ rotate: plateRotate }}
+              className="shadow-cinematic relative aspect-[4/3] w-full overflow-hidden rounded-xl"
+            >
               {statementStates.map((state, index) => (
                 <motion.div
                   key={state.id}
@@ -85,13 +93,13 @@ export function VisualStatement() {
                 >
                   <Figure
                     asset={state.image}
-                    sizes="(max-width: 640px) 62vw, 34rem"
+                    sizes="(max-width: 1024px) 60vw, 32rem"
                     className="h-full w-full"
                   />
                 </motion.div>
               ))}
               <div aria-hidden className="absolute inset-0 ring-1 ring-bone/15 ring-inset" />
-            </div>
+            </motion.div>
 
             <motion.p
               key={statementStates[active].id}
@@ -104,13 +112,13 @@ export function VisualStatement() {
             </motion.p>
           </motion.div>
 
-          {/* State index */}
+          {/* State index: a row under the plate on phones, a rail on desktop. */}
           <ol
-            className="absolute top-1/2 right-4 z-30 hidden -translate-y-[13rem] gap-3 lg:right-[3%] lg:flex lg:flex-col"
+            className="z-30 flex flex-wrap items-center gap-x-5 gap-y-2 lg:absolute lg:top-1/2 lg:right-[3%] lg:flex-col lg:items-end lg:gap-3 lg:-translate-y-[13rem]"
             aria-label="Visual states"
           >
             {statementStates.map((state, index) => (
-              <li key={state.id} className="flex items-center justify-end gap-3">
+              <li key={state.id} className="flex items-center gap-3">
                 <span
                   aria-hidden
                   className={`h-px transition-all duration-700 ${
@@ -128,7 +136,7 @@ export function VisualStatement() {
             ))}
           </ol>
 
-          <p className="text-meta absolute right-4 bottom-8 z-30 hidden text-right text-[9px] leading-[2] text-bone/50 sm:block lg:right-[3%]">
+          <p className="text-meta absolute right-4 bottom-8 z-30 hidden text-right text-[9px] leading-[2] text-bone/50 lg:right-[3%] lg:block">
             New perspectives.
             <br />
             Same planet.

@@ -1,9 +1,10 @@
 import { useRef } from 'react';
 import * as motionReact from 'motion/react';
 import { ArrowRight } from 'lucide-react';
-import { featuredProject } from '../data/site';
+import { featuredProject, projects } from '../data/site';
 import { Figure } from './ui/Figure';
 import { Grain } from './ui/Grain';
+import { useOpenProject } from '../hooks/useOpenProject';
 import { MagneticButton } from './ui/MagneticButton';
 import { useReducedMotion } from '../hooks/useMediaQuery';
 import { inViewSoft, stagger, rise } from '../lib/motion';
@@ -14,6 +15,8 @@ const { motion, useScroll, useTransform } = motionReact;
 export function FeaturedProject() {
   const ref = useRef<HTMLElement | null>(null);
   const reduced = useReducedMotion();
+  const openProject = useOpenProject();
+  const featured = projects.find((project) => project.id === featuredProject.projectId);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
 
   // The plate creeps forward through the whole time it is on screen.
@@ -41,7 +44,7 @@ export function FeaturedProject() {
         className="relative mx-auto w-full max-w-[112rem] px-4 pb-16 sm:px-6 lg:pb-24"
       >
         <motion.p variants={rise} className="text-meta text-[9px] text-bone/70">
-          {featuredProject.index}
+          Project {featured?.index}
         </motion.p>
 
         <motion.h2
@@ -62,8 +65,9 @@ export function FeaturedProject() {
             </motion.p>
             <motion.div variants={rise} className="mt-9">
               <MagneticButton
-                href={featuredProject.href}
-                className="text-meta group inline-flex items-center gap-3 rounded-full bg-bone px-6 py-3.5 text-[9px] text-ink transition-colors duration-300 hover:bg-white"
+                onClick={() => featured && openProject(featured.id)}
+                ariaHasPopup="dialog"
+                className="text-meta group inline-flex cursor-pointer items-center gap-3 rounded-full bg-bone px-6 py-3.5 text-[9px] text-ink transition-colors duration-300 hover:bg-white"
               >
                 {featuredProject.cta}
                 <ArrowRight
@@ -91,12 +95,14 @@ export function FeaturedProject() {
           className="mt-12 flex items-center gap-4 border-t border-bone/10 pt-6"
           aria-label="Project index"
         >
-          {['01', '02', '03', '04'].map((n) => (
+          {projects.map((project) => (
             <li
-              key={n}
-              className={`text-meta text-[9px] ${n === '03' ? 'text-bone' : 'text-ash/45'}`}
+              key={project.id}
+              className={`text-meta text-[9px] ${
+                project.id === featuredProject.projectId ? 'text-bone' : 'text-ash/45'
+              }`}
             >
-              {n}
+              {project.index}
             </li>
           ))}
         </motion.ol>

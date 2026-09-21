@@ -21,6 +21,16 @@ export const studio = {
   year: 2026,
 } as const;
 
+/**
+ * PLACEHOLDER destination for every "book a shoot" action on the site.
+ *
+ * Every booking control routes through this one value, so swapping in the
+ * studio's real address — or a booking form URL, or a wa.me link — is a
+ * one-line change here and nothing else needs touching.
+ */
+export const bookingHref =
+  `mailto:${studio.email}?subject=${encodeURIComponent('Shoot enquiry — Skyframe')}`;
+
 export type NavItem = { label: string; href: string; id: string };
 
 export const navigation: NavItem[] = [
@@ -30,16 +40,6 @@ export const navigation: NavItem[] = [
   { label: 'Contact', href: '#contact', id: 'contact' },
 ];
 
-/** The card floating in the hero composition. */
-export const heroProject = {
-  eyebrow: 'Aerial film',
-  location: 'Uttarakhand · India',
-  altitude: 'ALT 420M',
-  index: 'Project 01',
-  title: 'The Highlands',
-  year: '2026',
-  image: media.heroCard,
-} as const;
 
 export type Project = {
   id: string;
@@ -107,6 +107,43 @@ export const projects: Project[] = [
   },
 ];
 
+export type HeroSlide = {
+  id: string;
+  eyebrow: string;
+  title: string;
+  location: string;
+  /** Third metadata line — altitude, year, whatever the frame is known by. */
+  meta: string;
+  image: MediaAsset;
+  /** The portfolio project this slide opens, when it has one. */
+  projectId?: string;
+};
+
+/**
+ * The hero card cycles through these. The opening frame is a film that has no
+ * portfolio entry of its own; the rest are the portfolio projects, so the
+ * arrows lead somewhere real.
+ */
+export const heroSlides: HeroSlide[] = [
+  {
+    id: 'the-highlands',
+    eyebrow: 'Aerial film',
+    title: 'The Highlands',
+    location: 'Uttarakhand · India',
+    meta: 'ALT 420M',
+    image: media.heroCard,
+  },
+  ...projects.map((project) => ({
+    id: project.id,
+    eyebrow: project.category,
+    title: project.title,
+    location: project.location,
+    meta: project.year,
+    image: project.image,
+    projectId: project.id,
+  })),
+];
+
 export type Service = {
   index: string;
   title: string;
@@ -142,12 +179,12 @@ export const services: Service[] = [
 ];
 
 export const featuredProject = {
-  index: 'Project 03',
+  /** The project this section features — drives the index row below it. */
+  projectId: 'the-coast',
   title: 'The Coast',
   location: 'Goa / India',
   description: 'A cinematic exploration of coastline, architecture and movement.',
   cta: 'Explore project',
-  href: '#work',
   image: media.featured,
   markers: ['Oceans', 'Cities', 'Landscapes', 'Beyond'],
 } as const;
@@ -252,7 +289,7 @@ export const booking = {
   eyebrow: "Let's collaborate",
   title: ["Let's take it", 'higher.'],
   body: 'Have a project that needs a different perspective?',
-  primary: { label: 'Book a shoot', href: '#contact' },
+  primary: { label: 'Book a shoot', href: bookingHref },
   secondary: { label: 'View work', href: '#work' },
   markers: ['Ideas', 'Landscapes', 'Brands', 'To new heights'],
   image: media.ctaBackground,

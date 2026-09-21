@@ -66,6 +66,12 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  /* The header is fixed, so an anchor jump would otherwise park the top of
+     a section underneath it. */
+  :where(section[id], [id='top']) {
+    scroll-margin-top: 5.5rem;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -78,8 +84,11 @@
     font-family: var(--font-sans);
     font-synthesis-weight: none;
     -webkit-font-smoothing: antialiased;
-    /* Animations translate elements horizontally; never let that scroll. */
-    overflow-x: hidden;
+    /* Animations translate elements horizontally; never let that scroll.
+       `clip` rather than `hidden`: `hidden` turns the body into a scroll
+       container, which is what makes `position: sticky` unreliable inside
+       it. */
+    overflow-x: clip;
   }
 
   ::selection {
