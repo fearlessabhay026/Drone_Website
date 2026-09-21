@@ -1,0 +1,149 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------ fonts */
+/* Self-hosted from npm: the site makes no external font requests. Declared
+   by hand rather than importing the Fontsource entrypoints, which ship every
+   unicode subset (Cyrillic, Greek, Vietnamese) this site will never set. */
+@font-face {
+  font-family: 'Archivo Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
+}
+
+/* ------------------------------------------------------------------ theme */
+@theme {
+  --font-display: 'Archivo Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-sans: 'Inter Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+
+  /* Cinematic neutrals - the whole site lives in this range. */
+  --color-ink: #0b0b0b;
+  --color-ink-soft: #121213;
+  --color-ink-raised: #17181a;
+  --color-bone: #f4f1ea;
+  --color-ash: #a8a8a8;
+  --color-ash-dim: #6f7175;
+
+  /* Muted accents, each drawn from its own section's imagery. */
+  --color-tide: #1d4a52;
+  --color-dusk: #3a3730;
+  --color-moss: #27352a;
+
+  --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ------------------------------------------------------------------ base */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-bone);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    /* Animations translate elements horizontally; never let that scroll. */
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-bone);
+    color: var(--color-ink);
+  }
+
+  /* A single, consistent focus ring for every interactive element. */
+  :where(a, button, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-bone);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+@layer utilities {
+  /* Oversized display type: tight tracking, cropped leading. */
+  .text-display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 0.85;
+    text-transform: uppercase;
+  }
+
+  /* Small caps metadata - the connective tissue of the layout. */
+  .text-meta {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  .text-edge {
+    /* Optical alignment for large type set flush to a container edge. */
+    margin-left: -0.055em;
+  }
+
+  .surface-glass {
+    background: color-mix(in srgb, var(--color-ink-raised) 82%, transparent);
+    backdrop-filter: blur(16px) saturate(120%);
+    border: 1px solid color-mix(in srgb, var(--color-bone) 12%, transparent);
+  }
+
+  .shadow-cinematic {
+    box-shadow:
+      0 2px 8px -2px rgb(0 0 0 / 0.5),
+      0 24px 48px -12px rgb(0 0 0 / 0.65),
+      0 48px 96px -24px rgb(0 0 0 / 0.55);
+  }
+
+  /* Film grain, drawn once as an SVG turbulence tile. */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.16;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+
+  .edge-fade-b {
+    mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+  }
+}
