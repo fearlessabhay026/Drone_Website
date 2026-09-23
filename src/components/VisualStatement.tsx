@@ -132,7 +132,7 @@ export function VisualStatement() {
                 />
                 <span
                   className={`text-meta text-[9px] transition-colors duration-700 ${
-                    active === index ? 'text-bone' : 'text-bone/35'
+                    active === index ? 'text-bone' : 'text-bone/55'
                   }`}
                 >
                   {state.index} {state.label}

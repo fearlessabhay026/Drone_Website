@@ -25,7 +25,7 @@ export function PortfolioSection() {
               type="button"
               onClick={() => openProject(coast.id)}
               aria-haspopup="dialog"
-              className="text-meta group flex cursor-pointer items-center gap-2 text-[9px] text-ash transition-colors hover:text-bone"
+              className="text-meta group -my-3.5 flex cursor-pointer items-center gap-2 py-3.5 text-[9px] text-ash transition-colors hover:text-bone"
             >
               View all
               <ArrowRight

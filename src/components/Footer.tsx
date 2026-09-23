@@ -56,7 +56,7 @@ export function Footer() {
                 <li key={item.id}>
                   <a
                     href={item.href}
-                    className="text-sm text-ash transition-colors duration-300 hover:text-bone"
+                    className="-my-1.5 inline-block py-1.5 text-sm text-ash transition-colors duration-300 hover:text-bone"
                   >
                     {item.label}
                   </a>

@@ -45,7 +45,7 @@ export function Navbar() {
           <div className="flex shrink-0 items-center gap-2">
             <a
               href="#top"
-              className="text-meta text-bone transition-opacity hover:opacity-70"
+              className="text-meta -my-3.5 py-3.5 text-bone transition-opacity hover:opacity-70"
             >
               {studio.name}
             </a>
