@@ -132,10 +132,16 @@ makes **zero external requests** (fonts are self-hosted from npm too).
    and drop its `blur` value (or keep a base64 LQIP of your own).
 3. Revise the alt text in `src/data/media.ts`, which is where every image's
    description lives.
+4. Run `npm run images:responsive` to rebuild the 640 / 1024 / 1600px
+   renditions and `src/data/media-srcset.json`.
 
 Nothing else needs to change — no component imports an image path directly.
-Once you have swapped everything, `scripts/` and the `sharp` dev dependency can
-be deleted.
+Once you have swapped everything, `generate-placeholders.mjs` and `scripts/lib/`
+can be deleted; keep `build-responsive.mjs`, `prerender.mjs` and `sharp`.
+
+The social card is `public/images/meta/og-image.jpg` (JPEG, because WebP link
+previews are unreliable). It is not produced by the generator — re-export it if
+the WebP changes.
 
 Hero and featured imagery loads eagerly (it is the LCP element); everything
 else is lazy with a blur-up placeholder and explicit dimensions, so nothing
@@ -153,6 +159,21 @@ live:
 Client logos are deliberately not invented. `ClientsSection` renders industry
 categories; each entry in `clients` accepts an optional `logo` asset for when
 real marks are available.
+
+## Prerendering
+
+`npm run build` renders the page twice: the normal client build, then
+`vite build --ssr src/entry-server.tsx`, and `scripts/prerender.mjs` writes
+the server-rendered markup (plus font preloads) into `dist/index.html`.
+Crawlers, link previews and visitors without JavaScript get the whole page;
+`src/main.tsx` hydrates it. The dev server still renders client-side.
+
+- Read browser state through `useMediaQuery` (it is hydration-safe), never in
+  a `useState` initialiser or during render.
+- Motion renders each entrance at its `initial` state. The `<noscript>` styles
+  in `index.html` show the end state instead; if you add an element that
+  should stay hidden without JS (like the stacked hero cards), mark it the way
+  `data-stack-slide` is.
 
 ## Notes
 
