@@ -52,15 +52,20 @@ export function VisualStatement() {
   return (
     <section
       ref={ref}
+      data-flight="statement"
       aria-labelledby="statement-heading"
       className="relative h-[280svh] lg:h-[320svh]"
     >
+      {/* Pinned in two layers so the drone crosses between the colour field
+          and the type, rather than over the top of it. */}
       <motion.div
         style={{ backgroundColor: background }}
-        className="sticky top-0 flex h-[100svh] items-center overflow-hidden"
+        className="sticky top-0 z-[1] h-[100svh] overflow-hidden"
       >
         <Grain />
+      </motion.div>
 
+      <div className="sticky top-0 z-10 -mt-[100svh] flex h-[100svh] items-center overflow-hidden">
         <div className="relative mx-auto flex w-full max-w-[112rem] flex-col justify-center gap-10 px-4 sm:px-6 lg:block">
           {/* Oversized type: the composition, not a heading above one. */}
           <h2
@@ -142,7 +147,7 @@ export function VisualStatement() {
             Same planet.
           </p>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

@@ -25,8 +25,9 @@ export function ServicesSection() {
   return (
     <section
       id="services"
+      data-flight="services"
       aria-labelledby="services-heading"
-      className="relative border-t border-bone/8 px-4 py-24 sm:px-6 lg:py-36"
+      className="relative z-10 border-t border-bone/8 px-4 py-24 sm:px-6 lg:py-36"
     >
       <div className="mx-auto max-w-[112rem]">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">

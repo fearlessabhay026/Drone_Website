@@ -11,8 +11,9 @@ export function AboutSection() {
   return (
     <section
       id="about"
+      data-flight="about"
       aria-labelledby="about-heading"
-      className="relative px-4 py-24 sm:px-6 lg:py-36"
+      className="relative z-10 px-4 py-24 sm:px-6 lg:py-36"
     >
       <div className="mx-auto grid max-w-[112rem] gap-10 lg:grid-cols-12 lg:gap-14">
         <motion.div

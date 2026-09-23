@@ -21,7 +21,7 @@ export function Testimonials() {
   return (
     <section
       aria-labelledby="testimonial-heading"
-      className="relative border-t border-bone/8 px-4 py-24 sm:px-6 lg:py-32"
+      className="relative z-10 border-t border-bone/8 px-4 py-24 sm:px-6 lg:py-32"
     >
       <div className="mx-auto max-w-[112rem]">
         <div className="flex items-center justify-between gap-6">

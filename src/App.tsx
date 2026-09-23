@@ -11,6 +11,8 @@ import { BookingCTA } from "./components/BookingCTA";
 import { Footer } from "./components/Footer";
 import { Cursor } from "./components/ui/Cursor";
 import { ProjectDialogProvider } from "./components/ProjectDialog";
+import { DroneLayer } from "./components/DroneLayer";
+import { ScrollProgress } from "./components/ScrollProgress";
 import * as motionReact from "motion/react";
 
 const { MotionConfig } = motionReact;
@@ -29,6 +31,12 @@ export default function App() {
           Skip to content
         </a>
 
+        {/* Fixed WebGL layer at z-5: above the page background, below every
+            piece of text and every card. The drone therefore flies behind the
+            headline and between the sections, and can never obscure content. */}
+        <DroneLayer />
+
+        <ScrollProgress />
         <Cursor />
         <Navbar />
 

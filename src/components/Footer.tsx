@@ -14,7 +14,7 @@ const social = [
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-bone/8 px-4 pt-16 pb-10 sm:px-6 lg:pt-20">
+    <footer className="relative z-10 border-t border-bone/8 px-4 pt-16 pb-10 sm:px-6 lg:pt-20">
       <div className="mx-auto max-w-[112rem]">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-5">

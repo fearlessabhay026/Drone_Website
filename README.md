@@ -9,7 +9,8 @@ navbar-headline-image-cards stack.
 
 ## Stack
 
-React 19 · TypeScript · Vite · Tailwind CSS v4 · Motion · Lucide
+React 19 · TypeScript · Vite · Tailwind CSS v4 · Motion · Lucide ·
+Three.js · React Three Fiber
 
 ## Getting started
 
@@ -20,6 +21,7 @@ npm run build      # typecheck + production build
 npm run preview    # serve the production build
 npm run lint
 npm run images     # regenerate the placeholder photography
+npm run model <src.glb>   # re-compress the drone model
 ```
 
 ## Structure
@@ -35,6 +37,14 @@ src/
     ServicesSection, FeaturedProject, AboutSection, VisualStatement,
     ClientsSection, Testimonials, BookingCTA, Footer
     ui/                  Figure, Reveal, MagneticButton, Cursor, Grain, SectionLabel
+    DroneLayer             mounts the 3D layer, lazily and defensively
+  three/
+    flight.ts              the flight plan, spline and viewport mapping
+    flightStore.ts         scroll progress + section geometry (not React state)
+    useFlightDriver.ts     passive scroll listener and re-measurement
+    Drone.tsx              model, propellers, banking, hover
+    DroneScene.tsx         lighting rig and procedural environment
+    DroneStage.tsx         the Canvas — code-split, never in the main bundle
   hooks/                 useMediaQuery, useActiveSection
   lib/motion.ts          the shared motion language — durations, easings, variants
 scripts/
@@ -45,6 +55,49 @@ scripts/
 Content and imagery are kept out of the components. To change what the site
 says, edit `src/data/site.ts`; to change what it shows, edit
 `src/data/media.ts`.
+
+## The drone
+
+A quadrotor flies the page. It enters from the far background, settles beside
+the hero card, and then acts as a camera operator: crossing the portfolio,
+making one pass through Services, moving toward the featured plate, crossing
+the visual statement, and finally shrinking into the distance over the closing
+CTA. Between those moments it is deliberately parked — a drone that never
+stops moving reads as decoration rather than a camera.
+
+**Layering is the art direction.** The canvas is `position: fixed` at `z-5`:
+above every section's background plate, below every piece of text and every
+card. The drone therefore flies *behind* the headline and *between* the page's
+layers, and can never obscure something you are reading. The hero and the
+visual statement are each pinned in two separate layers so the drone can pass
+between a section's backdrop and its own copy — `position: sticky` creates a
+stacking context, so a single pinned wrapper would flatten both onto one plane.
+
+**The flight plan** (`src/three/flight.ts`) is declared per *section*, not as
+page percentages, then resolved against measured section offsets at runtime.
+Section heights move with viewport and content, so page percentages would
+drift away from whatever the drone is meant to be pointing at. Coordinates are
+viewport-relative and resolved against the camera frustum *at each point's own
+depth*, which keeps the composition intact from ultrawide to phone.
+
+Compact viewports fly a separate, simpler plan rather than a squeezed copy of
+the desktop one: on a phone the hero card is ~92vw, so there are no side
+margins to fly in and the only clear air is above the headline.
+
+**Performance.** The model is Draco-compressed from 4.4MB to 223KB, with
+duplicate geometry pruned from 157 primitives down to 48 draw calls. Three.js
+and the canvas are code-split into a lazy chunk, so the main bundle is
+unchanged and the page's HTML and images are never behind WebGL. The Draco
+decoder is self-hosted in `public/draco`, keeping the site's zero-external-
+request property.
+
+**It is never load-bearing.** `useHasArrived()` gates the hero's reveal, and a
+2.6s timeout flips it regardless — if WebGL is unsupported, the chunk fails to
+load, or the context is lost, the page reveals itself and behaves normally.
+An error boundary around the canvas does the same.
+
+**Reduced motion** stops the entrance and the flight entirely, parks the drone,
+and lets the content transitions run as simple fades.
 
 ## The imagery
 

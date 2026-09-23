@@ -15,7 +15,8 @@ export function PortfolioSection() {
   const openProject = useOpenProject();
 
   return (
-    <section id="work" aria-labelledby="work-heading" className="relative px-4 py-24 sm:px-6 lg:py-36">
+    <section id="work"
+      data-flight="work" aria-labelledby="work-heading" className="relative z-10 px-4 py-24 sm:px-6 lg:py-36">
       <div className="mx-auto max-w-[112rem]">
         <header className="mb-14 lg:mb-20">
           <div className="flex items-center justify-between gap-6">

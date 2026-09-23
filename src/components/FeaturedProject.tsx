@@ -26,22 +26,23 @@ export function FeaturedProject() {
   return (
     <section
       ref={ref}
+      data-flight="featured"
       aria-labelledby="featured-heading"
       className="relative flex min-h-[86svh] items-end overflow-hidden lg:min-h-[100svh]"
     >
-      <motion.div style={{ scale, y }} className="absolute inset-[-6%]">
+      <motion.div style={{ scale, y }} className="absolute inset-[-6%] z-[1]">
         <Figure asset={featuredProject.image} sizes="100vw" className="h-full w-full" />
       </motion.div>
 
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/35" />
-      <Grain />
+      <div aria-hidden className="absolute inset-0 z-[1] bg-gradient-to-t from-ink via-ink/55 to-ink/35" />
+      <Grain className="z-[1]" />
 
       <motion.div
         variants={stagger(0.1, 0.1)}
         initial="hidden"
         whileInView="visible"
         viewport={inViewSoft}
-        className="relative mx-auto w-full max-w-[112rem] px-4 pb-16 sm:px-6 lg:pb-24"
+        className="relative z-10 mx-auto w-full max-w-[112rem] px-4 pb-16 sm:px-6 lg:pb-24"
       >
         <motion.p variants={rise} className="text-meta text-[9px] text-bone/70">
           Project {featured?.index}

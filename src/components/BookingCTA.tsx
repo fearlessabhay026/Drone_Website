@@ -23,21 +23,22 @@ export function BookingCTA() {
   return (
     <section
       id="contact"
+      data-flight="contact"
       aria-labelledby="cta-heading"
       className="relative flex min-h-[92svh] items-end overflow-hidden"
     >
-      <motion.div style={{ y, scale }} className="absolute inset-[-8%]">
+      <motion.div style={{ y, scale }} className="absolute inset-[-8%] z-[1]">
         <Figure asset={booking.image} sizes="100vw" className="h-full w-full" />
       </motion.div>
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/40" />
-      <Grain />
+      <div aria-hidden className="absolute inset-0 z-[1] bg-gradient-to-t from-ink via-ink/60 to-ink/40" />
+      <Grain className="z-[1]" />
 
       <motion.div
         variants={stagger(0.09, 0.08)}
         initial="hidden"
         whileInView="visible"
         viewport={inViewSoft}
-        className="relative mx-auto w-full max-w-[112rem] px-4 pb-16 sm:px-6 lg:pb-24"
+        className="relative z-10 mx-auto w-full max-w-[112rem] px-4 pb-16 sm:px-6 lg:pb-24"
       >
         <motion.div variants={rise}>
           <SectionLabel>{booking.eyebrow}</SectionLabel>

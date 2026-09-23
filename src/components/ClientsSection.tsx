@@ -26,7 +26,8 @@ export function ClientsSection() {
   return (
     <section
       aria-labelledby="clients-heading"
-      className="relative border-t border-bone/8 px-4 py-20 sm:px-6 lg:py-28"
+      data-flight="clients"
+      className="relative z-10 border-t border-bone/8 px-4 py-20 sm:px-6 lg:py-28"
     >
       <div className="mx-auto max-w-[112rem]">
         <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
