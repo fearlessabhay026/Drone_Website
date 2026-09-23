@@ -58,46 +58,57 @@ says, edit `src/data/site.ts`; to change what it shows, edit
 
 ## The drone
 
-A quadrotor flies the page. It enters from the far background, settles beside
-the hero card, and then acts as a camera operator: crossing the portfolio,
-making one pass through Services, moving toward the featured plate, crossing
-the visual statement, and finally shrinking into the distance over the closing
-CTA. Between those moments it is deliberately parked — a drone that never
-stops moving reads as decoration rather than a camera.
+A quadrotor introduces the page, then becomes part of its chrome.
 
-**Layering is the art direction.** The canvas is `position: fixed` at `z-5`:
-above every section's background plate, below every piece of text and every
-card. The drone therefore flies *behind* the headline and *between* the page's
-layers, and can never obscure something you are reading. The hero and the
-visual statement are each pinned in two separate layers so the drone can pass
-between a section's backdrop and its own copy — `position: sticky` creates a
-stacking context, so a single pinned wrapper would flatten both onto one plane.
+**In the hero** it enters from the far background on an arc, passes behind the
+headline, and settles beside the card — only then does the hero reveal. The
+five project cards are a depth stack advanced by scroll inside a pinned frame.
 
-**The flight plan** (`src/three/flight.ts`) is declared per *section*, not as
-page percentages, then resolved against measured section offsets at runtime.
-Section heights move with viewport and content, so page percentages would
-drift away from whatever the drone is meant to be pointing at. Coordinates are
-viewport-relative and resolved against the camera frustum *at each point's own
-depth*, which keeps the composition intact from ultrawide to phone.
+**After the hero it docks into the navigation**, holding station beside the
+wordmark at ~54px (40px on compact viewports) and reacting with a small lift
+and bank each time the visitor crosses into a new section. There is no flight
+plan past the hero; the drone has stopped being a camera and become chrome.
 
-Compact viewports fly a separate, simpler plan rather than a squeezed copy of
-the desktop one: on a phone the hero card is ~92vw, so there are no side
-margins to fly in and the only clear air is above the headline.
+**Layering is the art direction.** During the flight the canvas is fixed at
+`z-5`: above every section's background plate, below every piece of text and
+every card, so the drone flies *behind* the headline and can never obscure
+something you are reading. The hero and the visual statement are each pinned
+in two separate layers so it can pass between a section's backdrop and its own
+copy — `position: sticky` creates a stacking context, so a single pinned
+wrapper would flatten both onto one plane.
+
+Once docked, the layer comes forward to `z-55`, because the navigation bar is
+opaque when scrolled and would otherwise hide the drone. The canvas never
+takes pointer events, so nothing underneath stops being clickable, and it
+stays below the mobile menu overlay at `z-60`.
+
+**The hand-off** from flight to dock is measured in viewport heights
+(`DOCK_BLEND_SCREENS`), not page progress. A fixed fraction of progress is
+hundreds of pixels on a long page, which left a half-docked, oversized drone
+hanging around for most of the first screen after the hero.
+
+**The flight plan** (`src/three/flight.ts`) is declared per *section* and
+resolved against measured section offsets at runtime, since section heights
+move with viewport and content. Coordinates are viewport-relative and resolved
+against the camera frustum *at each point's own depth*, which keeps the
+composition intact from ultrawide to phone. Compact viewports fly a separate,
+simpler plan: a phone's hero card is ~92vw, so there are no side margins and
+the only clear air is above the headline.
 
 **Performance.** The model is Draco-compressed from 4.4MB to 223KB, with
 duplicate geometry pruned from 157 primitives down to 48 draw calls. Three.js
 and the canvas are code-split into a lazy chunk, so the main bundle is
 unchanged and the page's HTML and images are never behind WebGL. The Draco
 decoder is self-hosted in `public/draco`, keeping the site's zero-external-
-request property.
+request property. Scroll writes one number to a ref and never re-renders React.
 
 **It is never load-bearing.** `useHasArrived()` gates the hero's reveal, and a
 2.6s timeout flips it regardless — if WebGL is unsupported, the chunk fails to
 load, or the context is lost, the page reveals itself and behaves normally.
 An error boundary around the canvas does the same.
 
-**Reduced motion** stops the entrance and the flight entirely, parks the drone,
-and lets the content transitions run as simple fades.
+**Reduced motion** skips the entrance and the flight entirely: the drone simply
+lives in the navigation from the start, and content transitions run as fades.
 
 ## The imagery
 

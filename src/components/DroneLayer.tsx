@@ -1,7 +1,7 @@
 import { Component, Suspense, lazy, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useIsDesktop, useMediaQuery, useReducedMotion } from '../hooks/useMediaQuery';
-import { markArrived } from '../three/flightStore';
+import { markArrived, useIsDocked } from '../three/flightStore';
 import { useFlightDriver } from '../three/useFlightDriver';
 
 const DroneStage = lazy(() => import('../three/DroneStage'));
@@ -48,6 +48,7 @@ export function DroneLayer() {
   const reduced = useReducedMotion();
   const isDesktop = useIsDesktop();
   const coarse = useMediaQuery('(pointer: coarse)');
+  const docked = useIsDocked();
   const [supported, setSupported] = useState<boolean | null>(null);
 
   useFlightDriver();
@@ -79,7 +80,14 @@ export function DroneLayer() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 z-[5]"
+      // Normally the canvas sits behind the page's content. Once the drone
+      // docks it has to come forward, because the navigation bar is opaque
+      // when scrolled and would otherwise hide it. The canvas never takes
+      // pointer events, so nothing underneath stops being clickable, and it
+      // stays below the mobile menu overlay.
+      className={`pointer-events-none fixed inset-0 transition-none ${
+        docked ? 'z-[55]' : 'z-[5]'
+      }`}
       style={{ contain: 'strict' }}
     >
       <StageBoundary>

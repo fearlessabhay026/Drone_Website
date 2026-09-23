@@ -24,6 +24,19 @@ export const flight = {
   arrived: false,
   /** True when the 3D layer is actually running (not blocked/failed/off). */
   active: false,
+  /**
+   * Centre of the navigation's dock anchor, in CSS pixels. The drone flies
+   * here once the hero is done and holds station beside the wordmark.
+   */
+  dock: { x: 0, y: 0, measured: false },
+  /** Scrollable page height in px, so durations can be set in screens. */
+  scrollable: 0,
+  /**
+   * True once the drone has committed to the dock. The canvas is normally
+   * behind the page's content, but the navigation bar is opaque when
+   * scrolled, so the layer has to come forward to sit beside the wordmark.
+   */
+  docked: false,
 };
 
 function notify() {
@@ -39,6 +52,12 @@ export function markArrived() {
 export function markActive() {
   if (flight.active) return;
   flight.active = true;
+  notify();
+}
+
+export function setDocked(value: boolean) {
+  if (flight.docked === value) return;
+  flight.docked = value;
   notify();
 }
 
@@ -68,11 +87,30 @@ export function useFlightActive() {
   );
 }
 
+export function useIsDocked() {
+  return useSyncExternalStore(
+    subscribe,
+    () => flight.docked,
+    () => false,
+  );
+}
+
 /** Re-measures every `[data-flight]` section into page-progress space. */
 export function measureSections() {
   const doc = document.documentElement;
   const scrollable = doc.scrollHeight - window.innerHeight;
   if (scrollable <= 0) return;
+  flight.scrollable = scrollable;
+
+  // The dock anchor is fixed to the viewport, so its position only changes
+  // with layout, which is exactly when this runs.
+  const anchor = document.querySelector<HTMLElement>('[data-drone-dock]');
+  if (anchor) {
+    const rect = anchor.getBoundingClientRect();
+    flight.dock.x = rect.left + rect.width / 2;
+    flight.dock.y = rect.top + rect.height / 2;
+    flight.dock.measured = rect.width > 0 || rect.height > 0;
+  }
 
   const next = new Map<string, Range>();
   for (const el of document.querySelectorAll<HTMLElement>('[data-flight]')) {

@@ -42,12 +42,23 @@ export function Navbar() {
               : 'border-transparent bg-transparent backdrop-blur-none'
           }`}
         >
-          <a
-            href="#top"
-            className="text-meta shrink-0 text-bone transition-opacity hover:opacity-70"
-          >
-            {studio.name}
-          </a>
+          <div className="flex shrink-0 items-center gap-2">
+            <a
+              href="#top"
+              className="text-meta text-bone transition-opacity hover:opacity-70"
+            >
+              {studio.name}
+            </a>
+            {/* Landing pad. The drone flies here once the hero is behind us
+                and holds station for the rest of the page. Reserving the
+                space in layout keeps the wordmark from shifting when it
+                arrives. */}
+            <span
+              aria-hidden
+              data-drone-dock
+              className="block h-6 w-9 shrink-0 sm:h-7 sm:w-12"
+            />
+          </div>
 
           {/* Desktop navigation pills */}
           <ul className="hidden items-center gap-1 lg:flex">
