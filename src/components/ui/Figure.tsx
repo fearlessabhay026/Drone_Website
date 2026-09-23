@@ -53,6 +53,8 @@ export function Figure({
         decoding={priority ? 'sync' : 'async'}
         fetchPriority={priority ? 'high' : 'auto'}
         onLoad={() => setLoaded(true)}
+        // index.html's <noscript> styles show it: without JS onLoad never fires.
+        data-figure-img=""
         className={`relative h-full w-full object-cover transition-opacity duration-700 ${
           loaded ? 'opacity-100' : 'opacity-0'
         } ${imgClassName}`}

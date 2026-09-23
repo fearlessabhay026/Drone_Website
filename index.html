@@ -32,6 +32,28 @@
     <link rel="canonical" href="https://skyframe-blue.vercel.app/" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!--
+      The page is prerendered with every entrance animation at its start state
+      (opacity 0, or a headline line parked below its mask). Without JavaScript
+      nothing would play them, so show the end state instead. The upcoming
+      hero cards stay hidden: they are stacked on top of the first one.
+    -->
+    <noscript>
+      <style>
+        #root [style^='opacity:0;']:not([data-stack-slide]),
+        #root [style='opacity:0']:not([data-stack-slide]) {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+        #root [data-figure-img] {
+          opacity: 1 !important;
+        }
+        #root [style*='translateY(108%)'],
+        #root [style*='translateY(110%)'] {
+          transform: none !important;
+        }
+      </style>
+    </noscript>
   </head>
   <body>
     <div id="root"></div>

@@ -56,6 +56,8 @@ export function FloatingProjectCard({
   return (
     <motion.div
       style={depthBlur ? { opacity, scale, y, filter } : { opacity, scale, y }}
+      // index.html's <noscript> styles keep the upcoming cards hidden by this.
+      data-stack-slide={isFirst ? undefined : ''}
       className={`${
         isFirst ? 'relative' : 'absolute inset-x-0 top-0'
       } flex justify-center will-change-transform`}
