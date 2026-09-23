@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
-    "images": "node scripts/generate-placeholders.mjs",
+    "images": "node scripts/generate-placeholders.mjs && node scripts/build-responsive.mjs",
+    "images:responsive": "node scripts/build-responsive.mjs",
     "model": "node scripts/prepare-drone-model.mjs"
   },
   "dependencies": {

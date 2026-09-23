@@ -1,4 +1,5 @@
 import manifest from './media-manifest.json';
+import srcsets from './media-srcset.json';
 
 /**
  * Central media registry.
@@ -9,7 +10,8 @@ import manifest from './media-manifest.json';
  *
  * To move to real aerial photography: drop your file at the same path under
  * `/public/images`, then update `width`/`height` here (and delete the `blur`
- * value, or regenerate it). Nothing else in the codebase needs to change.
+ * value, or regenerate it), then run `npm run images:responsive` so the
+ * smaller renditions match. Nothing else in the codebase needs to change.
  */
 export type MediaAsset = {
   src: string;
@@ -17,6 +19,8 @@ export type MediaAsset = {
   height: number;
   /** Inline 20px preview used for the blur-up transition. Optional. */
   blur?: string;
+  /** Smaller renditions (scripts/build-responsive.mjs). Optional. */
+  srcSet?: string;
   alt: string;
 };
 
@@ -43,7 +47,8 @@ const ALT: Record<MediaKey, string> = {
 function build(): Record<MediaKey, MediaAsset> {
   const out = {} as Record<MediaKey, MediaAsset>;
   for (const key of Object.keys(manifest) as MediaKey[]) {
-    out[key] = { ...manifest[key], alt: ALT[key] };
+    const srcSet = (srcsets as Partial<Record<MediaKey, string>>)[key];
+    out[key] = { ...manifest[key], srcSet, alt: ALT[key] };
   }
   return out;
 }

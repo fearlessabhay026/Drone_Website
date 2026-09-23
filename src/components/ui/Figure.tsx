@@ -45,6 +45,7 @@ export function Figure({
       <img
         ref={attach}
         src={asset.src}
+        srcSet={asset.srcSet}
         alt={asset.alt}
         width={asset.width}
         height={asset.height}

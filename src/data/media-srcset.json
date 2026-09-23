@@ -1,0 +1,16 @@
+{
+  "heroBackground": "/images/hero/hero-background-640.webp 640w, /images/hero/hero-background-1024.webp 1024w, /images/hero/hero-background-1600.webp 1600w, /images/hero/hero-background.webp 2400w",
+  "heroCard": "/images/hero/hero-card-640.webp 640w, /images/hero/hero-card-1024.webp 1024w, /images/hero/hero-card.webp 1600w",
+  "projectCoast": "/images/projects/the-coast-640.webp 640w, /images/projects/the-coast-1024.webp 1024w, /images/projects/the-coast-1600.webp 1600w, /images/projects/the-coast.webp 1760w",
+  "projectCity": "/images/projects/above-the-city-640.webp 640w, /images/projects/above-the-city-1024.webp 1024w, /images/projects/above-the-city.webp 1280w",
+  "projectDesert": "/images/projects/desert-lines-640.webp 640w, /images/projects/desert-lines-1024.webp 1024w, /images/projects/desert-lines-1600.webp 1600w, /images/projects/desert-lines.webp 2400w",
+  "projectEstate": "/images/projects/the-estate-640.webp 640w, /images/projects/the-estate-1024.webp 1024w, /images/projects/the-estate-1600.webp 1600w, /images/projects/the-estate.webp 1760w",
+  "featured": "/images/projects/featured-the-coast-640.webp 640w, /images/projects/featured-the-coast-1024.webp 1024w, /images/projects/featured-the-coast-1600.webp 1600w, /images/projects/featured-the-coast.webp 2400w",
+  "aboutPortrait": "/images/about/studio-portrait-640.webp 640w, /images/about/studio-portrait-1024.webp 1024w, /images/about/studio-portrait.webp 1200w",
+  "stateCoast": "/images/states/state-coast-640.webp 640w, /images/states/state-coast-1024.webp 1024w, /images/states/state-coast.webp 1400w",
+  "stateCity": "/images/states/state-city-640.webp 640w, /images/states/state-city-1024.webp 1024w, /images/states/state-city.webp 1400w",
+  "stateLand": "/images/states/state-land-640.webp 640w, /images/states/state-land-1024.webp 1024w, /images/states/state-land.webp 1400w",
+  "servicesAccent": "/images/services/services-accent-640.webp 640w, /images/services/services-accent.webp 900w",
+  "ctaBackground": "/images/cta/cta-background-640.webp 640w, /images/cta/cta-background-1024.webp 1024w, /images/cta/cta-background-1600.webp 1600w, /images/cta/cta-background.webp 2400w",
+  "footerThumb": "/images/footer/footer-ridge-640.webp 640w, /images/footer/footer-ridge.webp 1000w"
+}
