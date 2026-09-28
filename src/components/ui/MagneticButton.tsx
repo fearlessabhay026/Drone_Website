@@ -66,8 +66,9 @@ export function MagneticButton({
   };
 
   if (href) {
+    const external = /^https?:/.test(href);
     return (
-      <motion.a href={href} {...shared}>
+      <motion.a href={href} {...(external && { target: '_blank', rel: 'noopener' })} {...shared}>
         {children}
       </motion.a>
     );

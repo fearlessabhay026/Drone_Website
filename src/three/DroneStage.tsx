@@ -8,6 +8,8 @@ type StageProps = {
   reduced: boolean;
   scale: number;
   compact: boolean;
+  /** Stops rendering entirely, e.g. once a phone has scrolled past the hero. */
+  paused: boolean;
 };
 
 /**
@@ -15,7 +17,7 @@ type StageProps = {
  * react-three-fiber are ~160KB gzipped and must not sit in the critical
  * bundle for a page whose content is HTML and images.
  */
-export default function DroneStage({ quality, reduced, scale, compact }: StageProps) {
+export default function DroneStage({ quality, reduced, scale, compact, paused }: StageProps) {
   return (
     <Canvas
       // The page owns the background; the canvas only composites the drone.
@@ -31,7 +33,7 @@ export default function DroneStage({ quality, reduced, scale, compact }: StagePr
       camera={{ position: [0, 0, CAMERA_Z], fov: CAMERA_FOV, near: 0.5, far: 120 }}
       // Reduced motion has nothing moving, so stop rendering entirely once
       // it settles; otherwise render continuously for the flight.
-      frameloop={reduced ? 'demand' : 'always'}
+      frameloop={paused ? 'never' : reduced ? 'demand' : 'always'}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping;
         gl.toneMappingExposure = 1.15;

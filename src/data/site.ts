@@ -4,32 +4,42 @@ import type { MediaAsset } from './media';
 /**
  * All site copy lives here so components stay presentational.
  *
- * Values marked PLACEHOLDER are illustrative only — replace them with the
- * studio's real details before the site goes live.
+ * Skyframe is a CONCEPT site: Advicty built it to show aerial studios what
+ * their site could look like. It is not a real studio, so the site says so
+ * (see ConceptNotice and the footer) and every contact action goes to Advicty.
  */
 
 export const studio = {
   name: 'Skyframe',
   tagline: 'Aerial Photography & Cinematography',
   strapline: ['New perspectives.', 'Bolder stories.'],
-  /** PLACEHOLDER contact details. */
-  email: 'hello@skyframe.studio',
-  whatsapp: '+91 00000 00000',
-  instagram: 'https://instagram.com',
-  youtube: 'https://youtube.com',
   footerNote: 'Made for a higher perspective.',
-  year: 2026,
 } as const;
 
+export const advicty = {
+  name: 'Advicty',
+  href: 'https://advicty.vercel.app',
+  instagram: 'https://instagram.com/advicty_',
+  email: 'advicty@gmail.com',
+  /**
+   * Advicty's WhatsApp, digits only with the country code (919876543210).
+   * Empty until the number exists; enquiries then go to the Advicty site.
+   */
+  whatsapp: '',
+} as const;
+
+const ENQUIRY = 'Hi Advicty, I saw the Skyframe demo and want a site like this for my studio';
+
 /**
- * PLACEHOLDER destination for every "book a shoot" action on the site.
- *
- * Every booking control routes through this one value, so swapping in the
- * studio's real address — or a booking form URL, or a wa.me link — is a
- * one-line change here and nothing else needs touching.
+ * Destination for every "get a site like this" action. Every enquiry control
+ * routes through this one value: a pre-filled WhatsApp chat with Advicty once
+ * the number is set, and Advicty's contact form until then.
  */
-export const bookingHref =
-  `mailto:${studio.email}?subject=${encodeURIComponent('Shoot enquiry — Skyframe')}`;
+export const enquiryHref = advicty.whatsapp
+  ? `https://wa.me/${advicty.whatsapp}?text=${encodeURIComponent(ENQUIRY)}`
+  : `${advicty.href}/#contact`;
+
+export const enquiryLabel = 'Get a site like this';
 
 export type NavItem = { label: string; href: string; id: string };
 
@@ -126,10 +136,10 @@ export type HeroSlide = {
  */
 export const heroSlides: HeroSlide[] = [
   {
-    id: 'the-highlands',
+    id: 'the-shallows',
     eyebrow: 'Aerial film',
-    title: 'The Highlands',
-    location: 'Uttarakhand · India',
+    title: 'The Shallows',
+    location: 'Andaman · India',
     meta: 'ALT 420M',
     image: media.heroCard,
   },
@@ -256,40 +266,11 @@ export const clients: Client[] = [
   { label: 'Brands', icon: 'sparkles' },
 ];
 
-export type Testimonial = {
-  quote: string;
-  name: string;
-  role: string;
-  initials: string;
-};
-
-/** PLACEHOLDER testimonials — replace with real, attributed client quotes. */
-export const testimonials: Testimonial[] = [
-  {
-    quote: 'The aerial perspective completely changed how we presented the property.',
-    name: 'Client name',
-    role: 'Real estate developer',
-    initials: 'RM',
-  },
-  {
-    quote: 'They found an angle on the resort that our last three shoots had missed entirely.',
-    name: 'Client name',
-    role: 'Hospitality group',
-    initials: 'AS',
-  },
-  {
-    quote: 'Calm on set, precise in the air, and the grade came back better than the brief.',
-    name: 'Client name',
-    role: 'Commercial director',
-    initials: 'NK',
-  },
-];
-
 export const booking = {
   eyebrow: "Let's collaborate",
   title: ["Let's take it", 'higher.'],
-  body: 'Have a project that needs a different perspective?',
-  primary: { label: 'Book a shoot', href: bookingHref },
+  body: 'Skyframe is a concept site by Advicty. Run an aerial studio and want one like it?',
+  primary: { label: enquiryLabel, href: enquiryHref },
   secondary: { label: 'View work', href: '#work' },
   markers: ['Ideas', 'Landscapes', 'Brands', 'To new heights'],
   image: media.ctaBackground,

@@ -56,8 +56,10 @@ export function Figure({
         onLoad={() => setLoaded(true)}
         // index.html's <noscript> styles show it: without JS onLoad never fires.
         data-figure-img=""
+        // Priority images paint as soon as they decode, without waiting for
+        // hydration to fire onLoad; the blur underneath covers the gap.
         className={`relative h-full w-full object-cover transition-opacity duration-700 ${
-          loaded ? 'opacity-100' : 'opacity-0'
+          loaded || priority ? 'opacity-100' : 'opacity-0'
         } ${imgClassName}`}
       />
     </div>

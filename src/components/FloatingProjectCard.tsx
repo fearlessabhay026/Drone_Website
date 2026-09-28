@@ -1,5 +1,6 @@
 import * as motionReact from 'motion/react';
 import type { MotionValue } from 'motion/react';
+import type { CSSProperties } from 'react';
 import { Figure } from './ui/Figure';
 import type { HeroSlide } from '../data/site';
 import { ease } from '../lib/motion';
@@ -73,6 +74,8 @@ export function FloatingProjectCard({
           initial={{ scale: 0.94, opacity: 0, y: 20 }}
           animate={revealed ? { scale: 1, opacity: 1, y: 0 } : { scale: 0.94, opacity: 0, y: 20 }}
           transition={{ duration: 1, ease, delay: revealed && isFirst ? 0.26 : 0 }}
+          data-enter
+          style={{ '--enter-delay': '0.15s', '--enter-y': '20px', '--enter-scale': 0.94 } as CSSProperties}
           className="surface-glass shadow-cinematic relative rounded-[1.75rem] p-2.5 sm:rounded-[2rem] sm:p-3"
         >
           <div className="relative aspect-[16/11] w-full sm:aspect-[16/9]">
@@ -83,6 +86,8 @@ export function FloatingProjectCard({
                 initial={{ scale: 1.04, opacity: 0 }}
                 animate={revealed ? { scale: 1, opacity: 1 } : { scale: 1.04, opacity: 0 }}
                 transition={{ duration: 1.1, ease, delay: revealed && isFirst ? 0.44 : 0 }}
+                data-enter
+                style={{ '--enter-delay': '0.25s', '--enter-scale': 1.04 } as CSSProperties}
                 className="relative h-full w-full"
               >
                 <div className="shadow-cinematic relative h-full w-full overflow-hidden rounded-[1.4rem] sm:rounded-[1.6rem]">
@@ -104,6 +109,8 @@ export function FloatingProjectCard({
                   initial={{ opacity: 0, y: 12 }}
                   animate={revealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
                   transition={{ duration: 0.7, ease, delay: revealed && isFirst ? 0.66 : 0 }}
+                  data-enter
+                  style={{ '--enter-delay': '0.4s', '--enter-y': '12px' } as CSSProperties}
                   className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6"
                 >
                   <p className="text-meta text-bone/70">{slide.eyebrow}</p>
@@ -120,6 +127,8 @@ export function FloatingProjectCard({
               initial={{ opacity: 0, x: 14 }}
               animate={revealed ? { opacity: 1, x: 0 } : { opacity: 0, x: 14 }}
               transition={{ duration: 0.8, ease, delay: revealed && isFirst ? 0.78 : 0 }}
+              data-enter
+              style={{ '--enter-delay': '0.45s', '--enter-x': '14px' } as CSSProperties}
               className="absolute top-3 right-3 hidden rounded-[1.1rem] border border-bone/10 bg-ink/45 px-4 py-3 backdrop-blur-md sm:block"
             >
               <p className="text-meta text-[9px] text-bone/55">{slide.eyebrow}</p>

@@ -7,7 +7,8 @@ import { Figure } from './ui/Figure';
 import { Grain } from './ui/Grain';
 import { FloatingProjectCard } from './FloatingProjectCard';
 import { useIsDesktop, useReducedMotion } from '../hooks/useMediaQuery';
-import { useHasArrived } from '../three/flightStore';
+import { useDroneMode, useHasArrived } from '../three/flightStore';
+import { ConceptNotice } from './ConceptNotice';
 import { ease } from '../lib/motion';
 
 const { motion, useScroll, useTransform, useMotionValueEvent } = motionReact;
@@ -32,6 +33,7 @@ export function Hero() {
   const reduced = useReducedMotion();
   const isDesktop = useIsDesktop();
   const revealed = useHasArrived();
+  const droneMode = useDroneMode();
   const [active, setActive] = useState(0);
 
   // Progress across the pinned run, 0 at the first card, 1 at the last.
@@ -86,6 +88,8 @@ export function Hero() {
           initial={{ opacity: 0, scale: 1.06 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.6, ease }}
+          data-enter
+          style={{ '--enter-scale': 1.06 } as CSSProperties}
           className="absolute inset-0"
         >
           <motion.div style={{ y: bgY, scale: bgScale }} className="absolute inset-[-8%]">
@@ -100,6 +104,23 @@ export function Hero() {
       </div>
 
       <div className="sticky top-0 z-10 -mt-[100svh] flex h-[100svh] flex-col items-center justify-center overflow-hidden px-4 pt-22 pb-26 sm:px-6">
+        <ConceptNotice />
+
+        {/* When the 3D drone is skipped (reduced motion, data saver, low
+            memory, no WebGL), a still of it holds the spot the flight
+            would have started from. */}
+        {droneMode === 'static' ? (
+          <img
+            src="/images/hero/drone-still.webp"
+            alt=""
+            width={328}
+            height={206}
+            decoding="async"
+            data-enter
+            className="pointer-events-none absolute top-[17%] right-[12%] w-[clamp(5.5rem,11vw,10rem)] lg:top-[30%] lg:right-[5%]"
+          />
+        ) : null}
+
         {/*
           Layer 2 — oversized type. It sits at z-10, *under* the drone layer's
           z-5 canvas? No: the canvas is fixed at z-5 and this is z-10, so the
@@ -116,6 +137,8 @@ export function Hero() {
                 initial={{ y: '108%' }}
                 animate={revealed ? { y: '0%' } : { y: '108%' }}
                 transition={{ duration: 1.1, ease, delay: revealed ? 0.04 + index * 0.1 : 0 }}
+                data-enter="rise"
+                style={{ '--enter-delay': `${0.05 + index * 0.08}s` } as CSSProperties}
                 className="block will-change-transform"
               >
                 {word}
@@ -202,9 +225,14 @@ function HeroChrome({ active, revealed }: { active: number; revealed: boolean })
       initial={{ opacity: 0 }}
       animate={{ opacity: revealed ? 1 : 0 }}
       transition={{ duration: 0.8, ease, delay: revealed ? 0.9 : 0 }}
+      data-enter
+      style={{ '--enter-delay': '0.5s' } as CSSProperties}
       className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 px-5 pb-6 sm:px-8 sm:pb-8"
     >
-      <span className="text-meta hidden text-[9px] text-ash sm:block">Scroll to explore</span>
+      {/* On desktop this corner holds the concept badge instead. */}
+      <span className="text-meta hidden text-[9px] text-ash sm:block lg:invisible">
+        Scroll to explore
+      </span>
 
       {/* Scroll progress: the only navigation affordance the sequence has. */}
       <ol className="mx-auto flex items-center gap-3" aria-label="Featured projects">

@@ -1,15 +1,17 @@
 import { ArrowUpRight } from 'lucide-react';
 import { media } from '../data/media';
-import { navigation, studio } from '../data/site';
+import { advicty, navigation, studio } from '../data/site';
 import { Figure } from './ui/Figure';
 
 // Named rather than badged: lucide dropped brand marks, and reproducing them
 // here would be a trademark question the site does not need to answer.
+// Skyframe is a concept, so these are Advicty's channels.
 const social = [
-  { label: 'Instagram', href: studio.instagram, external: true },
-  { label: 'YouTube', href: studio.youtube, external: true },
-  { label: 'Email', href: `mailto:${studio.email}`, external: false },
-  { label: 'WhatsApp', href: `https://wa.me/${studio.whatsapp.replace(/\D/g, '')}`, external: true },
+  { label: 'Instagram', href: advicty.instagram, external: true },
+  { label: 'Email', href: `mailto:${advicty.email}`, external: false },
+  ...(advicty.whatsapp
+    ? [{ label: 'WhatsApp', href: `https://wa.me/${advicty.whatsapp}`, external: true }]
+    : []),
 ];
 
 export function Footer() {
@@ -75,9 +77,14 @@ export function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col gap-3 border-t border-bone/8 pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-meta text-[9px] text-ash">
-            © {studio.year} {studio.name}. All rights reserved.
-          </p>
+          <a
+            href={advicty.href}
+            target="_blank"
+            rel="noopener"
+            className="text-meta -my-3 w-fit py-3 text-[9px] text-ash transition-colors duration-300 hover:text-bone"
+          >
+            Concept build by Advicty
+          </a>
           <p className="text-meta text-[9px] text-ash">{studio.footerNote}</p>
         </div>
       </div>

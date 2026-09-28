@@ -37,6 +37,8 @@ const INTRO_SECONDS = 3.2;
  * after the hero.
  */
 const DOCK_BLEND_SCREENS = 0.55;
+/** Where a phone's drone leaves to after the hero: straight up, out of frame. */
+const EXIT_POINT = { x: -0.2, y: 1.8, z: -6 };
 /** How long a section-change reaction takes to settle. */
 const PULSE_SECONDS = 1.1;
 
@@ -154,49 +156,56 @@ export function Drone({ quality, reduced, scale, compact }: DroneProps) {
 
     // Past the hero the drone leaves the page and takes station in the
     // navigation, so the flight target crossfades into the dock target.
+    // Phones have no dock (the anchor is not displayed below md), so there
+    // the same crossfade carries it up and out of frame instead.
+    const docking = flight.dock.measured;
     const hero = flight.ranges.get('hero');
     const dockFrom = hero ? hero.end : 0.22;
     const dockBlend =
       flight.scrollable > 0 ? (viewHeightPx * DOCK_BLEND_SCREENS) / flight.scrollable : 0.05;
-    const dockT = !flight.dock.measured
-      ? 0
-      : reduced
+    const dockT = reduced
+      ? docking
         ? 1 // No flight to perform, so it simply lives in the navigation.
-        : smoothstep(dockFrom, dockFrom + dockBlend, flight.progress);
+        : 0
+      : smoothstep(dockFrom, dockFrom + dockBlend, flight.progress);
 
     let flightScale = scale;
     if (dockT > 0) {
-      const anchor = pixelToViewportPoint(flight.dock.x, flight.dock.y, viewWidthPx, viewHeightPx);
+      const anchor = docking
+        ? pixelToViewportPoint(flight.dock.x, flight.dock.y, viewWidthPx, viewHeightPx)
+        : EXIT_POINT;
       // `scratch` is a per-instance scratchpad, reused each frame to avoid
       // allocating vectors 60 times a second. Mutating it is the point.
       // oxlint-disable-next-line react/immutability
       scratch.dockPoint.x = anchor.x;
       scratch.dockPoint.y = anchor.y;
-      scratch.dockPoint.z = DOCK_Z;
+      scratch.dockPoint.z = docking ? DOCK_Z : EXIT_POINT.z;
       toWorld(scratch.dockPoint, aspect, scratch.dockWorld);
 
       scratch.target.x = THREE.MathUtils.lerp(scratch.target.x, scratch.dockWorld.x, dockT);
       scratch.target.y = THREE.MathUtils.lerp(scratch.target.y, scratch.dockWorld.y, dockT);
       scratch.target.z = THREE.MathUtils.lerp(scratch.target.z, scratch.dockWorld.z, dockT);
 
-      const dockScale = scaleForPixelWidth(
-        compact ? DOCK_WIDTH_PX.compact : DOCK_WIDTH_PX.comfortable,
-        DOCK_Z,
-        viewHeightPx,
-      );
-      flightScale = THREE.MathUtils.lerp(scale, dockScale, dockT);
+      if (docking) {
+        const dockScale = scaleForPixelWidth(
+          compact ? DOCK_WIDTH_PX.compact : DOCK_WIDTH_PX.comfortable,
+          DOCK_Z,
+          viewHeightPx,
+        );
+        flightScale = THREE.MathUtils.lerp(scale, dockScale, dockT);
+      }
     }
 
     // Tell the page once the drone has committed, so the canvas can come
     // forward over the (opaque, when scrolled) navigation bar.
-    const isDocked = dockT > 0.5;
+    const isDocked = docking && dockT > 0.5;
     if (isDocked !== s.docked) {
       s.docked = isDocked;
       setDocked(isDocked);
     }
 
     // A small reaction each time the visitor crosses into a new section.
-    if (dockT > 0.35 && !reduced) {
+    if (docking && dockT > 0.35 && !reduced) {
       let current = '';
       for (const [name, range] of flight.ranges) {
         if (flight.progress >= range.start && flight.progress < range.end) {
@@ -254,7 +263,7 @@ export function Drone({ quality, reduced, scale, compact }: DroneProps) {
     // Hover: a slow figure-of-eight, tiny. Not a bounce. Scaled down when
     // docked, where the same amplitude would read as a wobbling icon.
     const hover = reduced ? 0 : 1;
-    const hoverAmp = THREE.MathUtils.lerp(1, 0.16, dockT);
+    const hoverAmp = THREE.MathUtils.lerp(1, 0.16, docking ? dockT : 0);
     const bobY = Math.sin(s.elapsed * 1.15) * 0.045 * hover * hoverAmp;
     const bobX = Math.sin(s.elapsed * 0.73 + 1.2) * 0.03 * hover * hoverAmp;
     // The section reaction: a small lift and sidestep that decays away.
@@ -282,9 +291,10 @@ export function Drone({ quality, reduced, scale, compact }: DroneProps) {
     const dockRoll = -s.pulseDir * pulse * 0.5;
     const dockYaw = -0.34 + Math.sin(s.elapsed * 0.45) * 0.09;
 
-    s.rot.z = damp(s.rot.z, THREE.MathUtils.lerp(targetRoll, dockRoll, dockT), 2.6, dt);
-    s.rot.x = damp(s.rot.x, THREE.MathUtils.lerp(targetPitch, 0.1, dockT), 2.6, dt);
-    s.rot.y = damp(s.rot.y, THREE.MathUtils.lerp(targetYaw, dockYaw, dockT), 2.2, dt);
+    const faceT = docking ? dockT : 0;
+    s.rot.z = damp(s.rot.z, THREE.MathUtils.lerp(targetRoll, dockRoll, faceT), 2.6, dt);
+    s.rot.x = damp(s.rot.x, THREE.MathUtils.lerp(targetPitch, 0.1, faceT), 2.6, dt);
+    s.rot.y = damp(s.rot.y, THREE.MathUtils.lerp(targetYaw, dockYaw, faceT), 2.2, dt);
 
     group.rotation.set(
       s.rot.x + Math.sin(s.elapsed * 0.9) * 0.012 * hover * hoverAmp,

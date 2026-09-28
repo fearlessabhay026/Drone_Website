@@ -6,7 +6,6 @@ import { FeaturedProject } from "./components/FeaturedProject";
 import { AboutSection } from "./components/AboutSection";
 import { VisualStatement } from "./components/VisualStatement";
 import { ClientsSection } from "./components/ClientsSection";
-import { Testimonials } from "./components/Testimonials";
 import { BookingCTA } from "./components/BookingCTA";
 import { Footer } from "./components/Footer";
 import { Cursor } from "./components/ui/Cursor";
@@ -48,7 +47,6 @@ export default function App() {
           <AboutSection />
           <VisualStatement />
           <ClientsSection />
-          <Testimonials />
           <BookingCTA />
         </main>
 

@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
+import type { CSSProperties } from 'react';
 import * as motionReact from 'motion/react';
 import { Menu, X } from 'lucide-react';
-import { navigation, studio } from '../data/site';
+import { enquiryHref, enquiryLabel, navigation, studio } from '../data/site';
 import { useActiveSection } from '../hooks/useActiveSection';
 import { useDialog } from '../hooks/useDialog';
 import { ease, swift } from '../lib/motion';
@@ -32,6 +33,8 @@ export function Navbar() {
         // Early, not last: the navigation and its CTA must be usable while
         // the rest of the hero is still settling.
         transition={{ duration: 0.7, ease, delay: 0.15 }}
+        data-enter
+        style={{ '--enter-y': '-24px' } as CSSProperties}
         className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 sm:pt-6"
       >
         <nav
@@ -52,11 +55,12 @@ export function Navbar() {
             {/* Landing pad. The drone flies here once the hero is behind us
                 and holds station for the rest of the page. Reserving the
                 space in layout keeps the wordmark from shifting when it
-                arrives. */}
+                arrives. Not displayed on phones, where the drone leaves
+                after the hero instead of crowding the wordmark. */}
             <span
               aria-hidden
               data-drone-dock
-              className="block h-6 w-9 shrink-0 sm:h-7 sm:w-12"
+              className="hidden h-7 w-12 shrink-0 md:block"
             />
           </div>
 
@@ -89,10 +93,12 @@ export function Navbar() {
 
           <div className="flex items-center gap-2">
             <a
-              href="#contact"
+              href={enquiryHref}
+              target="_blank"
+              rel="noopener"
               className="text-meta hidden rounded-full bg-bone px-5 py-2.5 text-ink transition-colors duration-300 hover:bg-white sm:block"
             >
-              Book a shoot
+              {enquiryLabel}
             </a>
             <button
               type="button"
@@ -154,11 +160,13 @@ export function Navbar() {
               </ul>
 
               <a
-                href="#contact"
+                href={enquiryHref}
+                target="_blank"
+                rel="noopener"
                 onClick={close}
                 className="text-meta block rounded-full bg-bone px-6 py-4 text-center text-ink"
               >
-                Book a shoot
+                {enquiryLabel}
               </a>
             </div>
           </motion.div>

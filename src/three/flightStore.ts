@@ -37,7 +37,14 @@ export const flight = {
    * scrolled, so the layer has to come forward to sit beside the wordmark.
    */
   docked: false,
+  /**
+   * How the drone is shown: undecided until the client has checked the
+   * device, then the live 3D layer or a static picture in the hero.
+   */
+  mode: 'pending' as DroneMode,
 };
+
+export type DroneMode = 'pending' | '3d' | 'static';
 
 function notify() {
   for (const listener of listeners) listener();
@@ -58,6 +65,12 @@ export function markActive() {
 export function setDocked(value: boolean) {
   if (flight.docked === value) return;
   flight.docked = value;
+  notify();
+}
+
+export function setDroneMode(value: DroneMode) {
+  if (flight.mode === value) return;
+  flight.mode = value;
   notify();
 }
 
@@ -84,6 +97,14 @@ export function useFlightActive() {
     subscribe,
     () => flight.active,
     () => false,
+  );
+}
+
+export function useDroneMode() {
+  return useSyncExternalStore(
+    subscribe,
+    () => flight.mode,
+    () => 'pending' as DroneMode,
   );
 }
 

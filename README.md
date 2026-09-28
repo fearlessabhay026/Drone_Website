@@ -2,6 +2,14 @@
 
 A cinematic single-page site for an aerial photography and cinematography studio.
 
+**Skyframe is a concept build by [Advicty](https://advicty.vercel.app)**, made
+to show aerial studios what their site could look like. It is not a real
+studio, and the site says so: a notice at the top of the hero and a credit in
+the footer. Every contact action ("Get a site like this", Instagram, email)
+goes to Advicty, through `advicty` and `enquiryHref` in `src/data/site.ts`.
+Set `advicty.whatsapp` to route enquiries to a pre-filled WhatsApp chat; until
+then they go to the contact form on advicty.vercel.app.
+
 The composition treats the photograph as the hero object — oversized type,
 a floating project card that the image breaks out of, layered parallax, and a
 scroll-driven visual statement section — rather than the usual
@@ -29,13 +37,13 @@ npm run model <src.glb>   # re-compress the drone model
 ```
 src/
   data/
-    site.ts              all copy, projects, services, testimonials
+    site.ts              all copy, projects, services, Advicty contact routing
     media.ts             central image registry (every image resolves here)
     media-manifest.json  generated: paths, dimensions, blur placeholders
   components/
     Navbar, Hero, FloatingProjectCard, PortfolioSection, ProjectCard,
     ServicesSection, FeaturedProject, AboutSection, VisualStatement,
-    ClientsSection, Testimonials, BookingCTA, Footer
+    ClientsSection, BookingCTA, Footer, ConceptNotice
     ui/                  Figure, Reveal, MagneticButton, Cursor, Grain, SectionLabel
     DroneLayer             mounts the 3D layer, lazily and defensively
   three/
@@ -65,9 +73,12 @@ headline, and settles beside the card — only then does the hero reveal. The
 five project cards are a depth stack advanced by scroll inside a pinned frame.
 
 **After the hero it docks into the navigation**, holding station beside the
-wordmark at ~54px (40px on compact viewports) and reacting with a small lift
-and bank each time the visitor crosses into a new section. There is no flight
-plan past the hero; the drone has stopped being a camera and become chrome.
+wordmark at ~54px (40px on tablets) and reacting with a small lift and bank
+each time the visitor crosses into a new section. There is no flight plan past
+the hero; the drone has stopped being a camera and become chrome. **Phones
+(<768px) have no dock**: the navigation is too narrow to hold the drone beside
+the wordmark, so it climbs out of frame after the hero and the canvas stops
+rendering until the hero is back on screen.
 
 **Layering is the art direction.** During the flight the canvas is fixed at
 `z-5`: above every section's background plate, below every piece of text and
@@ -102,13 +113,22 @@ unchanged and the page's HTML and images are never behind WebGL. The Draco
 decoder is self-hosted in `public/draco`, keeping the site's zero-external-
 request property. Scroll writes one number to a ref and never re-renders React.
 
-**It is never load-bearing.** `useHasArrived()` gates the hero's reveal, and a
-2.6s timeout flips it regardless — if WebGL is unsupported, the chunk fails to
-load, or the context is lost, the page reveals itself and behaves normally.
-An error boundary around the canvas does the same.
+**It is never load-bearing.** On desktop `useHasArrived()` gates the hero's
+reveal, and a 2.6s timeout flips it regardless — if WebGL is unsupported, the
+chunk fails to load, or the context is lost, the page reveals itself and
+behaves normally. An error boundary around the canvas does the same.
 
-**Reduced motion** skips the entrance and the flight entirely: the drone simply
-lives in the navigation from the start, and content transitions run as fades.
+**Phones never wait for it.** Below 1024px the hero's entrance is plain CSS
+(`[data-enter]` in `src/index.css`), so the headline, the first card and the
+navigation are in the first paint of the prerendered HTML rather than behind
+hydration and the drone. The 3D chunk is only requested after the window's
+`load` event, so it does not compete with the hero's images and fonts.
+
+**The 3D drone is skipped** (no three.js chunk, no model download) when the
+visitor prefers reduced motion, has data saver on
+(`navigator.connection.saveData`), the device reports 4GB of memory or less
+(`navigator.deviceMemory`), or WebGL is unavailable. The hero shows a still of
+the drone instead (`public/images/hero/drone-still.webp`).
 
 ## The imagery
 
@@ -149,12 +169,9 @@ reflows on load.
 
 ## Placeholder content
 
-These are illustrative and marked in `src/data/site.ts` — replace before going
-live:
-
-- studio contact details (`email`, `whatsapp`, social URLs)
-- the About statistics (50+ / 12+ / 4K+)
-- all three testimonials, including the attributed names
+Skyframe is a concept, so its studio copy is illustrative. The About
+statistics (50+ / 12+ / 4K+) are part of that demo copy. Invented client
+testimonials were removed rather than shown as real quotes.
 
 Client logos are deliberately not invented. `ClientsSection` renders industry
 categories; each entry in `clients` accepts an optional `logo` asset for when

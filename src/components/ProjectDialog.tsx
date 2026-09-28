@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
 import * as motionReact from 'motion/react';
 import { ArrowLeft, ArrowRight, X } from 'lucide-react';
-import { bookingHref, projects } from '../data/site';
+import { enquiryHref, enquiryLabel, projects } from '../data/site';
 import { Figure } from './ui/Figure';
 import { useDialog } from '../hooks/useDialog';
 import { ProjectDialogContext } from '../hooks/useOpenProject';
@@ -105,10 +105,12 @@ function ProjectDialog({ index, onClose, onStep }: ProjectDialogProps) {
               <p className="mt-5 text-sm leading-relaxed text-ash">{project.note}</p>
 
               <a
-                href={bookingHref}
+                href={enquiryHref}
+                target="_blank"
+                rel="noopener"
                 className="text-meta group mt-7 flex w-fit items-center gap-3 rounded-full bg-bone px-6 py-3.5 text-[9px] text-ink transition-colors duration-300 hover:bg-white"
               >
-                Start a project
+                {enquiryLabel}
                 <ArrowRight
                   size={12}
                   strokeWidth={1.5}
